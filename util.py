@@ -1,8 +1,17 @@
+""" 
+    this file has the functions of preprocessing 
+    
+    otsu_thresholding 
+    center_of_sliding_level
+    connected_component_image
+
+"""
 import sys
 import numpy as np 
 from skimage.filters import threshold_otsu
 import cv2,math
 from skimage import measure
+
 
 def otsu_thresholding(im_float):
     
