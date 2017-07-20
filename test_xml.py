@@ -59,7 +59,7 @@ im_rgb = cv2.cvtColor(im_rgba, cv2.COLOR_RGBA2RGB)
 
 #temp = convert_contour_coordinate_resolution(opencv_contours,slide.level_downsamples[slide_level])
 opencv_contours = get_opencv_contours_from_xml(xml_path,slide.level_downsamples[slide_level])
-maske_image = get_mask_from_opencv_contours(opencv_contours,slide,slide_level)
+#imaske_image = get_mask_from_opencv_contours(opencv_contours,slide,slide_level)
 #print len(temp)
 cont_img = im_rgb
 print 'cont_image dimension : ',cont_img.shape 
@@ -81,7 +81,7 @@ plt.imshow(cont_img)
 plt.axis('off')
 #cv2.imshow("GRAY", im_gray) 
 #cv2.imshow("CONTOUR", cont_img)
-
+cv2.imwrite("tummor.jpg",cont_img)
 #cv2.imshow("MASK",mask_image)
 #cv2.imshow("RGBA",im_rgba)
 #cv2.waitKey()
