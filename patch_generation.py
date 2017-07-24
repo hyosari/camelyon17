@@ -38,7 +38,7 @@ def patch_generation(tif_dir,mask_dir,save_fdir,save_pdir,save_cdir,slide_level,
     list_tif_name = filelist_in_directory(tif_dir)
     list_mask_name = filelist_in_directory(mask_dir) 
 
-    for slide_idx in range(1): 
+    for slide_idx in range(len(list_tif_name)): 
         pwd_tif = join(tif_dir,list_tif_name[slide_idx])
         pwd_msk = join(mask_dir,list_mask_name[slide_idx]) 
         filename = splitext(list_tif_name[slide_idx])[0]
