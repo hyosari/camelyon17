@@ -7,7 +7,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 import csv
 from image_plot import subplot_show 
-from integral import patch_sampling_using_integral
+from integral import patch_sampling_using_integral,tumor_patch_sampling_using_centerwin
 
 
 def filelist_in_directory(fdir):
@@ -19,7 +19,7 @@ def filelist_in_directory(fdir):
 
 
 
-def patch_generation(tif_dir,mask_dir,save_fdir,save_pdir,save_cdir,slide_level,patch_size,patch_num):
+def patch_generation(tif_dir,mask_dir,save_fdir,save_pdir,save_cdir,slide_level,patch_size,patch_num,tumor_win=False):
     """
      save patch image and extraction point with csv, jpg image on the directory
 
@@ -31,6 +31,8 @@ def patch_generation(tif_dir,mask_dir,save_fdir,save_pdir,save_cdir,slide_level,
      slide : slide_level that mask image was applied with 
      patch_size : patch size square 
      patch_num : the number of patches in a whole slide 
+     tumor_win : tumor window patch sampling true
+     
     
         tif file and mask file sholud be one to one mached and same ordered 
     """
@@ -58,16 +60,19 @@ def patch_generation(tif_dir,mask_dir,save_fdir,save_pdir,save_cdir,slide_level,
             mask = mask.astype(int)
 
         # sampling patches
-        patch_list,patch_point = patch_sampling_using_integral(slide,slide_level,mask,patch_size,patch_num)
+        if tumor_win:
+            patch_list,patch_point = tumor_patch_sampling_using_centerwin(slide,slide_level,mask,patch_size,patch_num)
+        else:
+            patch_list,patch_point = patch_sampling_using_integral(slide,slide_level,mask,patch_size,patch_num)
         p_l_size = patch_size/ slide.level_downsamples[slide_level] 
         p_l_size = int(p_l_size)
 
         #image wirte and save patches 
-        for f_th in range(patch_num): 
+        for f_th in range(len(patch_list)): 
             cv2.imwrite(save_fdir+filename+"_patch_"+str(f_th)+"_"+str(patch_point[f_th][1])+"_"+str(patch_point[f_th][0])+"_"+str(patch_size)+".jpg",patch_list[f_th]) 
 
             c_writer.writerow((patch_point[f_th][1],patch_point[f_th][0]))
-            cv2.rectangle(bgr_im,(patch_point[f_th][1],patch_point[f_th][0]),(patch_point[f_th][1]+p_l_size,patch_point[f_th][0]+p_l_size),(255,0,0),3)
+            cv2.rectangle(bgr_im,(patch_point[f_th][1],patch_point[f_th][0]),(patch_point[f_th][1]+p_l_size,patch_point[f_th][0]+p_l_size),(255,0,0),1)
 
         cv2.imwrite(save_pdir+filename+"_selection_point.jpg",bgr_im)
         print "complete patch extraction about "+ list_tif_name[slide_idx]
